@@ -1,5 +1,6 @@
 import { times, maxBy } from 'lodash'
-import { Score } from '../lib/scores'
+import { Score, SCORE_TYPES, ScoreType } from '../lib/scores'
+import { SoundPlayer } from '../lib/soundPlayer'
 
 type PlayerInformation = {
   num: number
@@ -28,6 +29,7 @@ export type OverResults = {
   currentTotalPoint: number
   end: boolean
   winner?: number
+  over?: boolean
 }
 
 const FIRST_OVER = 40
@@ -44,9 +46,12 @@ const defaultResults = {
   end: false,
 } as OverResults
 
+type SoundType = ScoreType | 'enter' | 'success' | 'fail'
+
 const over = {
   results: defaultResults,
   playerNum: 4,
+  soundPlayers: {} as { [type in SoundType]: SoundPlayer },
 
   init(playerNum: number): void {
     this.playerNum = playerNum
@@ -61,6 +66,20 @@ const over = {
 
       this.results.history.push([])
     })
+
+    this.initSoundPlayers()
+  },
+
+  initSoundPlayers(): void {
+    Object.values(SCORE_TYPES).forEach((type: ScoreType) => {
+      const src = `/sounds/${type}.mp3`
+
+      this.soundPlayers[type] = new SoundPlayer(src)
+    })
+
+    this.soundPlayers.enter = new SoundPlayer('/sounds/player-change.mp3')
+    this.soundPlayers.success = new SoundPlayer('/sounds/success.mp3')
+    this.soundPlayers.fail = new SoundPlayer('/sounds/fail.mp3')
   },
 
   // historyからplayerInformationsを計算
@@ -87,13 +106,34 @@ const over = {
     return totalPoint <= this.results.before
   },
 
+  playSound(score: Score): void {
+    const { type } = score
+
+    this.soundPlayers[type].play()
+  },
+
   dart(score: Score): OverResults {
-    if (this.results.currentResults.length >= 3) {
+    if (this.results.end || this.results.currentResults.length >= 3) {
       return this.results
     }
 
+    this.playSound(score)
     this.results.currentResults.push(score)
     this.results.currentTotalPoint = this.currentTotalPoint()
+
+    if (this.results.currentResults.length === 3) {
+      this.results.over = this.judgeWhetherOver()
+
+      if (this.results.over) {
+        setTimeout(() => {
+          this.soundPlayers.fail.play()
+        }, 500)
+      } else {
+        setTimeout(() => {
+          this.soundPlayers.success.play()
+        }, 500)
+      }
+    }
 
     return this.results
   },
@@ -114,6 +154,7 @@ const over = {
   },
 
   playerChange(): OverResults {
+    this.results.over = undefined
     this.results.history[this.results.player].push({
       scores: { ...this.results.currentResults },
       point: this.currentTotalPoint(),
@@ -139,6 +180,8 @@ const over = {
 
       this.results.round++
     }
+
+    this.soundPlayers.enter.play()
 
     this.results.player = (this.results.player + 1) % this.playerNum
 

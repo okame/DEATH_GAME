@@ -1,6 +1,6 @@
 import { times } from 'lodash'
 
-const SCORE_TYPES = {
+export const SCORE_TYPES = {
   SINGLE: 'single',
   DOUBLE: 'double',
   TRIPLE: 'triple',

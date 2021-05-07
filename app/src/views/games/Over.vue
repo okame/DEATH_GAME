@@ -30,6 +30,9 @@
         <div class="value">
           {{ results.currentTotalPoint }}
         </div>
+        <div v-if="results.over !== undefined" :class="results.over && 'fail'" class="result">
+          {{ results.over ? 'FAIL' : 'SUCCESS' }}
+        </div>
       </div>
 
       <div v-if="results.end" class="end-message text-center">
@@ -154,12 +157,21 @@ export default defineComponent({
     }
 
     .current-score {
-      padding-top: 40px;
+      padding-top: 20px;
+
       .player {
         font-size: 40px;
       }
       .value {
         font-size: 200px;
+      }
+      .result {
+        font-size: 35px;
+        color: blue;
+
+        &.fail {
+          color: red;
+        }
       }
     }
 
