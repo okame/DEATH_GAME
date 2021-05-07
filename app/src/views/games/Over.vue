@@ -25,7 +25,17 @@
         <div class="before-score-value">{{ results.before }}</div>
       </div>
 
-      <div class="current-score text-center">{{ results.currentTotalPoint }}</div>
+      <div v-if="!results.end" class="current-score text-center">
+        <div class="player">Player {{ results.player + 1 }}</div>
+        <div class="value">
+          {{ results.currentTotalPoint }}
+        </div>
+      </div>
+
+      <div v-if="results.end" class="end-message text-center">
+        <div class="message">Winner!</div>
+        <div class="player">Player {{ results.winner }}</div>
+      </div>
 
       <div class="results">
         <h4 class="text-center">Darts & Results</h4>
@@ -129,12 +139,9 @@ export default defineComponent({
   }
 
   .main-area {
-    > * {
-      width: 33%;
-    }
-
     .before-score {
       padding-top: 90px;
+      width: 200px;
 
       h4 {
         font-size: 30px;
@@ -147,8 +154,18 @@ export default defineComponent({
     }
 
     .current-score {
-      padding-top: 60px;
-      font-size: 200px;
+      padding-top: 40px;
+      .player {
+        font-size: 40px;
+      }
+      .value {
+        font-size: 200px;
+      }
+    }
+
+    .end-message {
+      padding-top: 50px;
+      font-size: 50px;
     }
 
     .results {
