@@ -1,6 +1,8 @@
 .DS_Store
 node_modules
 /dist
+public/sounds/*
+!public/sounds/readme.md
 
 
 # local env files

@@ -12,7 +12,9 @@
   },
   "main": "index.js",
   "dependencies": {
+    "@types/howler": "^2.2.2",
     "@types/lodash": "^4.14.168",
+    "howler": "^2.2.1",
     "lodash": "^4.17.21",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0"
