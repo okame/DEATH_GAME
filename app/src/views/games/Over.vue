@@ -1,35 +1,39 @@
 <template>
   <div class="root">
     <div class="round-box">
-      <span class="current-round">5</span>
+      <span class="current-round">{{ results.round }}</span>
       <span class="slash">/</span>
       <span class="all-round">8</span>
       <span class="text-round">ROUND</span>
     </div>
 
     <ul class="score-board flex flex-between">
-      <li v-for="index in 4" :key="index" class="score-board-item">
+      <li v-for="index in playerNum" :key="index" class="score-board-item">
         <div class="name">Player {{ index }}</div>
-        <div class="score">400</div>
-        <div class="life">LIFE 3/8</div>
+        <div v-if="results.playerInformations[index - 1]" class="score">
+          {{ results.playerInformations[index - 1].point }}
+        </div>
+        <div v-if="results.playerInformations[index - 1]" class="life">
+          LIFE {{ results.playerInformations[index - 1].life }}/8
+        </div>
       </li>
     </ul>
 
     <div class="main-area flex flex-between">
       <div class="before-score text-center">
         <h4>BEFORE</h4>
-        <div class="before-score-value">103</div>
+        <div class="before-score-value">{{ results.before }}</div>
       </div>
 
-      <div class="current-score text-center">51</div>
+      <div class="current-score text-center">{{ results.currentTotalPoint }}</div>
 
       <div class="results">
         <h4 class="text-center">Darts & Results</h4>
 
         <ul class="results-list">
-          <li>BULL</li>
-          <li>TRIPLE 18</li>
-          <li class="pending">3</li>
+          <li v-for="index in 3" :key="index" :class="results.currentResults[index - 1] ? '' : 'pending'">
+            {{ results.currentResults[index - 1] ? results.currentResults[index - 1].label : index }}
+          </li>
         </ul>
       </div>
     </div>
@@ -38,11 +42,37 @@
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from 'vue'
+import { useRoute } from 'vue-router'
+import scoreManager from '../../lib/scoreManager'
+import over, { OverResults } from '../../games/over'
+import { Score } from '../../lib/scores'
+
+type State = {
+  results: OverResults
+  playerNum: number
+}
 
 export default defineComponent({
   components: {},
   setup() {
-    const state = reactive({})
+    const route = useRoute()
+    const playerNum = Number(route.params.num)
+    const state = reactive<State>({
+      results: over.results,
+      playerNum,
+    })
+
+    over.init(playerNum)
+
+    scoreManager.handleDart((score: Score) => {
+      state.results = { ...state.results, ...over.dart(score) }
+    })
+
+    scoreManager.handleChange(() => {
+      state.results = { ...state.results, ...over.playerChange() }
+    })
+
+    scoreManager.observe()
 
     return reactive({
       ...toRefs(state),

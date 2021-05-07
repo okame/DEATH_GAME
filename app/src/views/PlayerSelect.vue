@@ -2,7 +2,7 @@
   <div class="root">
     <ul class="num-list flex flex-between">
       <li v-for="index in 4" :key="index" class="flex flex-center flex-center-v">
-        <router-link to="game">
+        <router-link :to="link(index)">
           {{ index }}
         </router-link>
       </li>
@@ -12,14 +12,23 @@
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from 'vue'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   components: {},
   setup() {
     const state = reactive({})
+    const route = useRoute()
+
+    const link = (num: number) => {
+      const gameName = route.params.game
+
+      return `/games/${gameName}/${num}`
+    }
 
     return reactive({
       ...toRefs(state),
+      link,
     })
   },
 })

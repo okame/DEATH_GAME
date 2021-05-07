@@ -1,7 +1,7 @@
 <template>
   <div class="root">
     <ul class="btns text-center">
-      <router-link to="player_select">
+      <router-link to="/player_select/over">
         <li class="btn">OVER</li>
       </router-link>
       <li class="btn">???</li>

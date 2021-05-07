@@ -2,7 +2,7 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import Home from '../views/Home.vue'
 import Menu from '../views/Menu.vue'
 import PlayerSelect from '../views/PlayerSelect.vue'
-import Game from '../views/Game.vue'
+import Over from '../views/games/Over.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -16,14 +16,14 @@ const routes: Array<RouteRecordRaw> = [
     component: Menu,
   },
   {
-    path: '/player_select',
+    path: '/player_select/:game',
     name: 'PlayerSelect',
     component: PlayerSelect,
   },
   {
-    path: '/game',
-    name: 'Game',
-    component: Game,
+    path: '/games/over/:num',
+    name: 'Over',
+    component: Over,
   },
 ]
 
