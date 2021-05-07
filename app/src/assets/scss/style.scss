@@ -1,0 +1,12 @@
+@import '@/assets/scss/destyle';
+@import '@/assets/scss/var';
+@import '@/assets/scss/common';
+
+.btn {
+  background-color: $base-color;
+  color: white;
+  border: none;
+  outline: none;
+  padding: 10px 20px;
+  font-size: 20px;
+}
