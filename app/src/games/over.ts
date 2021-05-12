@@ -34,7 +34,7 @@ export type OverResults = {
 
 const FIRST_OVER = 40
 const MAX_LIFE = 8
-const MAX_ROUND = 4
+const MAX_ROUND = 8
 const defaultResults = {
   playerInformations: [],
   currentResults: [],
